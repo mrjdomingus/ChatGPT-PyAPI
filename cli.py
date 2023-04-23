@@ -11,6 +11,7 @@ if __name__ == "__main__":
         bing = argv[1] == "bing"
     if bing:
         from chatgpt_pyapi.bing import ChatGPT, Message, ConversationStyle
+
         # Read the path to the cookies file from a environment variable
         BING_COOKIES_FILE = environ["BING_COOKIES_FILE"]
         # Create ChatGPT API instance
@@ -18,6 +19,7 @@ if __name__ == "__main__":
         user_input = " ".join(argv[2:])
     else:
         from chatgpt_pyapi.openai import ChatGPT, Message, Models
+
         # Read the API key from a environment variable
         API_KEY = environ["OPENAI_API_KEY"]
         # Create ChatGPT API instance

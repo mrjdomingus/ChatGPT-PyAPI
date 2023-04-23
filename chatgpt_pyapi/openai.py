@@ -5,7 +5,8 @@ from urllib import request as http_request
 
 
 class Models:
-    '''This class holds available models'''
+    """This class holds available models"""
+
     GPT_4 = "gpt-4"
     GPT_4_0314 = "gpt-4-0314"
     GPT_4_32K = "gpt-4-32k"
@@ -15,14 +16,15 @@ class Models:
 
 
 class Roles:
-    '''This class holds available roles to be used in Messages'''
+    """This class holds available roles to be used in Messages"""
+
     ASSISTANT = "assistant"
     SYSTEM = "system"
     USER = "user"
 
 
 class Message:
-    '''Message type. Supports roles.'''
+    """Message type. Supports roles."""
 
     def __init__(self, text: str, role: str = Roles.USER):
         assert type(text) == str
@@ -32,16 +34,14 @@ class Message:
 
     @classmethod
     def from_api(cls, api_msg: dict):
-        '''Create a Message object from API format'''
+        """Create a Message object from API format"""
         assert type(api_msg) == dict
         msg = api_msg["choices"][0]["message"]
         msg["content"] = msg["content"].strip("\n")
-        return cls(
-            msg["content"],
-            msg["role"])
+        return cls(msg["content"], msg["role"])
 
     def to_api(self):
-        '''Convert to API format'''
+        """Convert to API format"""
         return {"role": self.role, "content": self.text}
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Message:
 
 
 class ChatGPT:
-    '''ChatGPT API'''
+    """ChatGPT API"""
 
     API_ENDPOINT = "https://api.openai.com/v1/chat/completions"
 
@@ -63,22 +63,20 @@ class ChatGPT:
         self.model = model
 
     def chat(self, message: Message) -> Message:
-        '''Add a message to the message history & send it to ChatGPT. Returns the answer as a Message instance.'''
+        """Add a message to the message history & send it to ChatGPT. Returns the answer as a Message instance."""
         self.add_to_chat(message)
         # Create api_input from message_history & encode it
         api_input = [m.to_api() for m in self._message_history]
         api_input_encoded = dumps(
-            {"model": self.model, "messages": api_input},
-            separators=(",", ":")).encode()
+            {"model": self.model, "messages": api_input}, separators=(",", ":")
+        ).encode()
         # Create a Request object with the right url, data, headers and http method
         request = http_request.Request(
             self.API_ENDPOINT,
             data=api_input_encoded,
-            headers={
-                "Authorization": self.auth,
-                "Content-Type": "application/json"
-            },
-            method="POST")
+            headers={"Authorization": self.auth, "Content-Type": "application/json"},
+            method="POST",
+        )
         # Send the request with r as the response
         with http_request.urlopen(request) as r:
             # Read response and parse json
@@ -89,7 +87,7 @@ class ChatGPT:
             return response_message
 
     def add_to_chat(self, message: Message) -> Message:
-        '''Add a message to the message history without sending it to ChatGPT'''
+        """Add a message to the message history without sending it to ChatGPT"""
         # Check if the message parameter is the correct type
         assert type(message) == Message, "message must be an instance of Message"
         self._message_history.append(message)

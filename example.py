@@ -5,11 +5,10 @@
 from os import environ
 from sys import argv
 
-example_system_message = "Please provide the following answers as cynical as possible, but still correct."
-example_questions = [
-    "Who are you?",
-    "Could you please elaborate?"
-]
+example_system_message = (
+    "Please provide the following answers as cynical as possible, but still correct."
+)
+example_questions = ["Who are you?", "Could you please elaborate?"]
 
 if __name__ == "__main__":
     bing = False
@@ -17,6 +16,7 @@ if __name__ == "__main__":
         bing = argv[1] == "bing"
     if bing:
         from chatgpt_pyapi.bing import ChatGPT, Message, ConversationStyle
+
         # Read the path to the cookies file from a environment variable
         BING_COOKIES_FILE = environ["BING_COOKIES_FILE"]
         # Create ChatGPT API instance (with creative answers)
@@ -24,6 +24,7 @@ if __name__ == "__main__":
         cgpt.chat(Message(example_system_message))
     else:
         from chatgpt_pyapi.openai import ChatGPT, Message, Models, Roles
+
         # Read the API key from a environment variable
         API_KEY = environ["OPENAI_API_KEY"]
         # Create ChatGPT API instance
